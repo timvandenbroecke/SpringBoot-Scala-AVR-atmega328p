@@ -23,6 +23,7 @@ import org.springframework.stereotype.Component
 @Component
 class AppStartRunner extends ApplicationRunner {
 
+
   private val LOG = LoggerFactory.getLogger(classOf[AppStartRunner])
 
   @throws(classOf[Exception])
@@ -51,24 +52,90 @@ class AppStartRunner extends ApplicationRunner {
 
     }
 
-    System.out.println("\n\n\n\nPress 1 for LED on \nPress 0 for LED off" )
+    System.out.println("\n\n1: Turn on LED's\n" +
+                            "2: Read analog ADC\n")
 
     val reader = new BufferedReader(new InputStreamReader(System.in))
-    val out = new PrintWriter(sp.getOutputStream, true)
+    //val out = new PrintWriter(sp.getOutputStream, true)
+    val select = reader.readLine
 
     while(true) {
-      try {
 
-        val name = reader.readLine
-        out.println(name)
 
-      }catch{
+      var input = ""
+      select match {
 
-        case e: NullPointerException => println(e)
+        case "1" => System.out.println("Press 1 for LED on\nPress 0 for LED off\n")
+          val ledReader = new BufferedReader(new InputStreamReader(System.in))
+          val selectLed = ledReader.readLine
+          if(selectLed == "1"){
+
+            try {
+              val out = new PrintWriter(sp.getOutputStream, true)
+              out.println("1")
+            }catch{
+
+              case e: NullPointerException => println(e)
+            }
+          }else if(selectLed == "0"){
+            try {
+              val out = new PrintWriter(sp.getOutputStream, true)
+              out.println("0")
+            }catch{
+
+              case e: NullPointerException => println(e)
+            }
+          }
+
+          sp.addDataListener(new SerialPortDataListener() {
+
+            override def getListeningEvents: Int = SerialPort.LISTENING_EVENT_DATA_AVAILABLE
+
+            override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
+
+              var input = ""
+              val in = new Scanner(sp.getInputStream)
+              input = in.nextLine
+              System.out.println("Microcontroller replies: " + input)
+              in.close()
+
+            }
+          });
+
+
+        case "2" => System.out.println(" Press 1 to receive analog data from PORTC0 or A0\n")
+          val ledReader = new BufferedReader(new InputStreamReader(System.in))
+          val selectLed = ledReader.readLine
+          if(selectLed == "1"){
+
+            try {
+              val out = new PrintWriter(sp.getOutputStream, true)
+              out.println("3")
+
+              sp.addDataListener(new SerialPortDataListener() {
+
+                override def getListeningEvents: Int = SerialPort.LISTENING_EVENT_DATA_AVAILABLE
+
+                override def serialEvent(serialPortEvent: SerialPortEvent): Unit = {
+
+                  var input = ""
+                  val in = new Scanner(sp.getInputStream)
+                  input = in.nextLine
+                  System.out.println("Microcontroller ACD value: " + input)
+                  in.close()
+
+                }
+              });
+            }catch{
+
+              case e: NullPointerException => println(e)
+            }
+
+          }
       }
 
       //Listens to incoming data in a loop
-      sp.addDataListener(new SerialPortDataListener() {
+      /*sp.addDataListener(new SerialPortDataListener() {
 
         override def getListeningEvents: Int = SerialPort.LISTENING_EVENT_DATA_AVAILABLE
 
@@ -81,7 +148,13 @@ class AppStartRunner extends ApplicationRunner {
           in.close()
 
         }
-      })
+      })*/
     }
   }
+}
+
+
+object AppStartRunner{
+
+
 }

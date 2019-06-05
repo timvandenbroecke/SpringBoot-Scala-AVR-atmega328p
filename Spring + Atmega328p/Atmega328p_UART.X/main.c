@@ -30,29 +30,53 @@ char rxBuffer[RX_BUFFER_SIZE];
 uint8_t rxReadPos = 0;
 uint8_t rxWritePos = 0;
 
-// Write
+
+// Write TX
 void appendSerial(char c);
 void serialWrite(char c[]);
 
-//  Read
+//  Read RX
 char getChar(void);
 char peekChar(void);
 
+char ADCResult[4];
+
 int main(void) {
     
+    //Configure the TX & RX
     UBRR0H = (BRC >> 8);    //Upper register
     UBRR0L = BRC;   //Lower register
     
     //  TX & RX
-    UCSR0B = (1 << TXEN0) | (1 << TXCIE0) | (1 << RXEN0) | (1 << RXCIE0);  //Setup control register B, transmitter and read enable
+    UCSR0B = (1 << TXEN0) | (1 << TXCIE0) | (1 << RXEN0) | (1 << RXCIE0);  //Setup control register B, transmitter enable
     UCSR0C = (1 << UCSZ01) | (1 << UCSZ00);  //Set up the 8bit data frame
     
+    /********************************************************************************************************************/
+    
+    //Configure the ADC
+    
+    //ADC0 is used by default pin 0 of A0 unless specified otherwise
+    
+    /*****Calculation prescaler******/
+    //Find a number between 50kHz and 200kHz 
+    // Calculation prescaler 1,000,000 / 50,000 = 100/5 = result 50kHz: 20 | 1,000,000 /200,000 = 10/2 = result 200kHz: 5
+    // Find between 5 and 20
+    // !Consult the atmel AVR register documentation!!!
+    /********************************/    
+    //Enable prescaler, determined by internal and external clock
+    ADCSRA |= 1<<ADPS2; //Set to 16 due to above calculation
+   
+    ADMUX |= 1<<ADLAR;  //8bit ADC result
+    ADMUX |= 1<<REFS0; 
+    ADCSRA |= 1<<ADIE;  //Enable ADC interupts
+    ADCSRA |= 1<<ADEN;  //Enable ADC feature
+   
+    sei();  //Enable global interupts
+    
+    ADCSRA |= 1<<ADSC;  //Start first conversion
+    
+   
 
-      
-    DDRB = (1 << PORTB0);
-    
-    sei();  //Enable interupts
-    
     while(1){   //Infinite loop
         
         char c = getChar();
@@ -60,13 +84,32 @@ int main(void) {
         if(c == '1'){
             
             sbi(PORTB, PORTB0);
+            serialWrite("LED on\r\n");
+           
         }else if(c == '0'){
             
             cbi(PORTB, PORTB0);
+            serialWrite("LED off\r\n");
         }
+        
+        if(c == '3'){
+            serialWrite(ADCResult);
+        }
+     
     }
     
     return 0;
+}
+
+//Add the ADC interupt routine and display results
+ISR(ADC_vect){
+    
+    //char adcResult[4];
+    
+    //Select ADCH, high set of bits
+    itoa(ADCH, ADCResult, 10);
+    //ADCResult = adcResult; //End result
+    ADCSRA |= 1<<ADSC;
 }
 
 void appendSerial(char c){
@@ -137,7 +180,7 @@ char getChar(void){
     return ret;
 }
 
-ISR(USART_RX_vect){ //This will fire up every time data is received
+ISR(USART_RX_vect){ //This will fire up every time incoming data is received
     
     rxBuffer[rxWritePos] = UDR0;
     

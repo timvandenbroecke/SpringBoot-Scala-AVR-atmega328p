@@ -10,9 +10,11 @@ Purely to show Spring IOT capabilities and as a example and document on how easi
 It's developed with serial communication through a USB using JSerialComm library its platform independent so you can use it on
 Windows / Linux / Mac, default is "COM3" but you may have to change its USB port adress to your OS specifications Win: "COM0", Linux: "dev/ttyUSB0" for example or if you use another port address number where the microcontroller is connected to.
 
-Work is still in progress for extra features these are ready to use and .
+Made in Scala with spring boot and the Atmega328p microcontroller in embedded-C with avrdude.
 
-Made in Scala and the Atmega328p microcontroller in embedded-C with avrdude.
+
+
+Work is still in progress for extra features these are ready to use and .
 
 1. By pressing 1 for LED on and 0 for LED off in console. 
    - Connect your LED on PortB pin 0 or pin 8 on the Arduino Uno

@@ -5,7 +5,7 @@ Once you set it up on the internet you can control it from anywhere in the world
 Which is easily done in the spring framework, cause the web server is already in a container in the java JAR.
 So you pretty much build the spring project JAR and fire it up and it will be working by default on localhost:8080, if port 8080 is free though.
 
-Purely to show Spring IOT capabilities and as a example and document on how easily it is done.
+Purely to show Spring IOT capabilities and to document on how easily it is done.
 
 It's developed with serial communication through a USB using JSerialComm library its platform independent so you can use it on
 Windows / Linux / Mac, default is "COM3" but you may have to change its USB port adress to your OS specifications Win: "COM0", Linux: "dev/ttyUSB0" for example or if you use another port address number where the microcontroller is connected to.

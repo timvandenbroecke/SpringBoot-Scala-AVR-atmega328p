@@ -13,6 +13,7 @@ Windows / Linux / Mac, default is "COM3" but you may have to change its USB port
 Made in Scala with spring boot and the Atmega328p microcontroller in embedded-C with avrdude.
 
 
+!WARNING i recon you know some basic electronics, consult some schemas on how to connect LED's or a potentiometer on the PortC0 for example there are dozens examples on how to do it don't blow your pins up.
 
 Work is still in progress for extra features these are ready to use.
 

@@ -1,4 +1,4 @@
-# Spring + Atmega328p
+# Spring + Scala + Atmega328p
 In this project you can control the Atmega328p/Arduino uno microcontroller through Spring boot restful microservices.
 Once you set it up on the internet you can control it from anywhere in the world with a internet connection.
 
@@ -23,5 +23,5 @@ Work is still in progress for extra features these are ready to use, might even 
 2. Read analog data from 0 to 255, press 1 in console to get the analog value
    - Its on de default pin PortC0 or pin A0 on the Arduino Uno
 
-3. COBS (Consistent Overhead Byte Stuffing) for serial communication)
+3. COBS (Consistent Overhead Byte Stuffing) for serial communication
    - In progress of implementing

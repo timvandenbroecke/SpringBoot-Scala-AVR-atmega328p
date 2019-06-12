@@ -22,3 +22,6 @@ Work is still in progress for extra features these are ready to use, might even 
 
 2. Read analog data from 0 to 255, press 1 in console to get the analog value
    - Its on de default pin PortC0 or pin A0 on the Arduino Uno
+
+3. COBS (Consistent Overhead Byte Stuffing) for serial communication)
+   - In progress of implementing
